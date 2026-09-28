@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MicroSave — Login</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="login-page">
+      <div class="login-left">
+        <div class="login-brand">
+          <div class="logo-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="color:#fff">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+            </svg>
+          </div>
+          <span class="brand-name">MicroSave</span>
+        </div>
+        <h1>Save Together.<br />Grow Together.</h1>
+        <p class="tagline">Self Help Group Savings &amp; Loan Management</p>
+        <p class="description">
+          MicroSave helps your community manage group savings, member contributions,
+          loans and repayments — all in one simple, secure dashboard built for self help groups.
+        </p>
+        <div class="login-illustration">
+          <div class="illust-card">
+            <div class="num">₹1.2L+</div>
+            <div class="lbl">Total Savings</div>
+          </div>
+          <div class="illust-card">
+            <div class="num">48</div>
+            <div class="lbl">Active Members</div>
+          </div>
+          <div class="illust-card">
+            <div class="num">12</div>
+            <div class="lbl">Active Loans</div>
+          </div>
+        </div>
+      </div>
+      <div class="login-right">
+        <div class="login-card">
+          <h2>Welcome back</h2>
+          <p class="subtitle">Sign in to your MicroSave account</p>
+
+          <div class="login-error" id="login-error">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="width:18px;height:18px;flex-shrink:0">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span id="login-error-msg">Invalid username or password</span>
+          </div>
+
+          <form id="login-form" autocomplete="off">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <div class="input-wrapper">
+                <span class="input-icon">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="width:18px;height:18px">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zm-4 7c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z"/>
+                  </svg>
+                </span>
+                <input type="text" id="username" class="form-input" placeholder="Enter username" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password</label>
+              <div class="input-wrapper">
+                <span class="input-icon">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="width:18px;height:18px">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0-1.1.9-2 2-2h4a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6a2 2 0 012-2h4m4 0V7a4 4 0 00-8 0v4m8 0H8"/>
+                  </svg>
+                </span>
+                <input type="password" id="password" class="form-input" placeholder="Enter password" required />
+                <button type="button" class="pw-toggle" id="pw-toggle">Show</button>
+              </div>
+            </div>
+
+            <div class="form-row-between">
+              <label class="checkbox-label">
+                <input type="checkbox" id="remember" /> Remember me
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg btn-block" id="login-btn">Sign In</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/login.js"></script>
+  </body>
+</html>
