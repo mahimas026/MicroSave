@@ -1,8 +1,6 @@
 package com.example.microsave.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,27 +13,17 @@ public class Contribution {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long contributionId;
 
-    @NotNull(message = "Member is required")
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal amount;
+
+    @Column(nullable = false)
+    private LocalDate contributionDate;
+
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @NotNull(message = "Amount is required")
-    @Positive(message = "Contribution amount must be positive")
-    private BigDecimal amount;
-
-    @NotNull(message = "Contribution date is required")
-    private LocalDate contributionDate;
-
     public Contribution() {
-    }
-
-    public Contribution(Long contributionId, Member member,
-                         BigDecimal amount, LocalDate contributionDate) {
-        this.contributionId = contributionId;
-        this.member = member;
-        this.amount = amount;
-        this.contributionDate = contributionDate;
     }
 
     public Long getContributionId() {
@@ -44,14 +32,6 @@ public class Contribution {
 
     public void setContributionId(Long contributionId) {
         this.contributionId = contributionId;
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
     }
 
     public BigDecimal getAmount() {
@@ -68,5 +48,13 @@ public class Contribution {
 
     public void setContributionDate(LocalDate contributionDate) {
         this.contributionDate = contributionDate;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 }

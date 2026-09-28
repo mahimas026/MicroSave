@@ -2,11 +2,9 @@ package com.example.microsave.controller;
 
 import com.example.microsave.entity.Loan;
 import com.example.microsave.service.LoanService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -20,50 +18,46 @@ public class LoanController {
     }
 
     @PostMapping
-    public ResponseEntity<Loan> createLoan(
-            @Valid @RequestBody Loan loan) {
+    public Loan createLoan(
+            @RequestBody Loan loan) {
 
-        return new ResponseEntity<>(
-                loanService.createLoan(loan),
-                HttpStatus.CREATED
-        );
+        return loanService.createLoan(loan);
     }
 
     @GetMapping
-    public ResponseEntity<List<Loan>> getAllLoans() {
-
-        return ResponseEntity.ok(
-                loanService.getAllLoans()
-        );
+    public List<Loan> getAllLoans() {
+        return loanService.getAllLoans();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Loan> getLoanById(
+    public Loan getLoanById(
             @PathVariable Long id) {
 
-        return ResponseEntity.ok(
-                loanService.getLoanById(id)
-        );
+        return loanService.getLoanById(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Loan> updateLoan(
+    public Loan updateLoan(
             @PathVariable Long id,
-            @Valid @RequestBody Loan loan) {
+            @RequestBody Loan loan) {
 
-        return ResponseEntity.ok(
-                loanService.updateLoan(id, loan)
-        );
+        return loanService.updateLoan(id, loan);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteLoan(
+    public String deleteLoan(
             @PathVariable Long id) {
 
         loanService.deleteLoan(id);
 
-        return ResponseEntity.ok(
-                "Loan deleted successfully"
-        );
+        return "Loan deleted successfully";
+    }
+
+    @GetMapping("/group/{groupId}/balance")
+    public BigDecimal getGroupBalance(
+            @PathVariable Long groupId) {
+
+        return loanService
+                .getGroupAvailableBalance(groupId);
     }
 }

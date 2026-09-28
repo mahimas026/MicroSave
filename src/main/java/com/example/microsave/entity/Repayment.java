@@ -1,8 +1,6 @@
 package com.example.microsave.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,27 +13,17 @@ public class Repayment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long repaymentId;
 
-    @NotNull(message = "Loan is required")
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal amount;
+
+    @Column(nullable = false)
+    private LocalDate repaymentDate;
+
     @ManyToOne
     @JoinColumn(name = "loan_id", nullable = false)
     private Loan loan;
 
-    @NotNull(message = "Repayment amount is required")
-    @Positive(message = "Repayment amount must be positive")
-    private BigDecimal amount;
-
-    @NotNull(message = "Repayment date is required")
-    private LocalDate repaymentDate;
-
     public Repayment() {
-    }
-
-    public Repayment(Long repaymentId, Loan loan,
-                     BigDecimal amount, LocalDate repaymentDate) {
-        this.repaymentId = repaymentId;
-        this.loan = loan;
-        this.amount = amount;
-        this.repaymentDate = repaymentDate;
     }
 
     public Long getRepaymentId() {
@@ -44,14 +32,6 @@ public class Repayment {
 
     public void setRepaymentId(Long repaymentId) {
         this.repaymentId = repaymentId;
-    }
-
-    public Loan getLoan() {
-        return loan;
-    }
-
-    public void setLoan(Loan loan) {
-        this.loan = loan;
     }
 
     public BigDecimal getAmount() {
@@ -68,5 +48,13 @@ public class Repayment {
 
     public void setRepaymentDate(LocalDate repaymentDate) {
         this.repaymentDate = repaymentDate;
+    }
+
+    public Loan getLoan() {
+        return loan;
+    }
+
+    public void setLoan(Loan loan) {
+        this.loan = loan;
     }
 }

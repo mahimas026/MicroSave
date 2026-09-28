@@ -7,10 +7,8 @@ import com.example.microsave.repository.LoanRepository;
 import com.example.microsave.repository.MemberRepository;
 import com.example.microsave.repository.RepaymentRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -33,7 +31,6 @@ public class LoanService {
         this.repaymentRepository = repaymentRepository;
     }
 
-    @Transactional
     public Loan createLoan(Loan loan) {
 
         if (loan.getMember() == null ||
@@ -44,97 +41,35 @@ public class LoanService {
 
         Member member = memberRepository.findById(
                 loan.getMember().getMemberId()
-        ).orElseThrow(
-                () -> new RuntimeException("Member not found")
-        );
+        ).orElseThrow(() ->
+                new RuntimeException("Member not found"));
 
-        // Rule 1:
-        // Member with active unpaid loan cannot take another loan.
-
-        List<Loan> activeLoans =
-                loanRepository.findByMemberMemberIdAndStatus(
-                        member.getMemberId(),
-                        Loan.Status.ACTIVE
-                );
-
-        for (Loan activeLoan : activeLoans) {
-
-            BigDecimal repayments =
-                    repaymentRepository.getTotalRepaymentByLoanId(
-                            activeLoan.getLoanId()
-                    );
-
-            BigDecimal outstanding =
-                    activeLoan.getAmount().subtract(repayments);
-
-            if (outstanding.compareTo(BigDecimal.ZERO) > 0) {
-
-                throw new RuntimeException(
-                        "Member already has an active unpaid loan"
-                );
-            }
-        }
-
-        // Calculate total contributions.
-
-        BigDecimal totalContributions =
-                contributionRepository
-                        .getTotalContributionsByGroupId(
-                                member.getGroup().getGroupId()
-                        );
-
-        // Calculate outstanding loans.
-
-        List<Loan> groupLoans =
+        boolean hasActiveLoan =
                 loanRepository
-                        .findByMemberGroupGroupIdAndStatus(
-                                member.getGroup().getGroupId(),
+                        .existsByMemberMemberIdAndStatus(
+                                member.getMemberId(),
                                 Loan.Status.ACTIVE
                         );
 
-        BigDecimal outstandingLoans =
-                BigDecimal.ZERO;
-
-        for (Loan groupLoan : groupLoans) {
-
-            BigDecimal repayments =
-                    repaymentRepository
-                            .getTotalRepaymentByLoanId(
-                                    groupLoan.getLoanId()
-                            );
-
-            BigDecimal outstanding =
-                    groupLoan.getAmount()
-                            .subtract(repayments);
-
-            if (outstanding.compareTo(BigDecimal.ZERO) > 0) {
-
-                outstandingLoans =
-                        outstandingLoans.add(outstanding);
-            }
+        if (hasActiveLoan) {
+            throw new RuntimeException(
+                    "Member already has an active loan"
+            );
         }
 
-        // Required business rule:
-        // Available pool = total contributions - outstanding loans.
-
-        BigDecimal availablePool =
-                totalContributions.subtract(outstandingLoans);
-
-        if (loan.getAmount().compareTo(availablePool) > 0) {
+        if (loan.getAmount() == null ||
+                loan.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
 
             throw new RuntimeException(
-                    "Loan amount exceeds group's available pool. " +
-                    "Available pool: " + availablePool
+                    "Loan amount must be greater than zero"
             );
         }
 
         loan.setMember(member);
 
-        if (loan.getLoanDate() == null) {
-            loan.setLoanDate(LocalDate.now());
+        if (loan.getStatus() == null) {
+            loan.setStatus(Loan.Status.ACTIVE);
         }
-
-        loan.setStatus(Loan.Status.ACTIVE);
 
         return loanRepository.save(loan);
     }
@@ -146,23 +81,28 @@ public class LoanService {
     public Loan getLoanById(Long id) {
 
         return loanRepository.findById(id)
-                .orElseThrow(
-                        () -> new RuntimeException("Loan not found")
-                );
+                .orElseThrow(() ->
+                        new RuntimeException("Loan not found"));
     }
 
-    public Loan updateLoan(Long id, Loan loan) {
+    public Loan updateLoan(
+            Long id,
+            Loan loan) {
 
         Loan existingLoan = getLoanById(id);
 
-        existingLoan.setAmount(loan.getAmount());
+        existingLoan.setAmount(
+                loan.getAmount()
+        );
 
-        if (loan.getLoanDate() != null) {
-            existingLoan.setLoanDate(loan.getLoanDate());
-        }
+        existingLoan.setLoanDate(
+                loan.getLoanDate()
+        );
 
         if (loan.getStatus() != null) {
-            existingLoan.setStatus(loan.getStatus());
+            existingLoan.setStatus(
+                    loan.getStatus()
+            );
         }
 
         if (loan.getMember() != null &&
@@ -170,9 +110,8 @@ public class LoanService {
 
             Member member = memberRepository.findById(
                     loan.getMember().getMemberId()
-            ).orElseThrow(
-                    () -> new RuntimeException("Member not found")
-            );
+            ).orElseThrow(() ->
+                    new RuntimeException("Member not found"));
 
             existingLoan.setMember(member);
         }
@@ -185,5 +124,49 @@ public class LoanService {
         Loan loan = getLoanById(id);
 
         loanRepository.delete(loan);
+    }
+
+    public BigDecimal getGroupAvailableBalance(Long groupId) {
+
+        BigDecimal totalContributions =
+                contributionRepository
+                        .getTotalContributionsByGroupId(
+                                groupId
+                        );
+
+        BigDecimal outstandingLoans =
+                BigDecimal.ZERO;
+
+        List<Loan> loans = loanRepository.findAll();
+
+        for (Loan loan : loans) {
+
+            if (loan.getMember() != null &&
+                    loan.getMember().getGroup() != null &&
+                    loan.getMember()
+                            .getGroup()
+                            .getGroupId()
+                            .equals(groupId) &&
+                    loan.getStatus() == Loan.Status.ACTIVE) {
+
+                BigDecimal repayments =
+                        repaymentRepository
+                                .getTotalRepaymentByLoanId(
+                                        loan.getLoanId()
+                                );
+
+                BigDecimal remaining =
+                        loan.getAmount()
+                                .subtract(repayments);
+
+                if (remaining.compareTo(BigDecimal.ZERO) > 0) {
+                    outstandingLoans =
+                            outstandingLoans.add(remaining);
+                }
+            }
+        }
+
+        return totalContributions
+                .subtract(outstandingLoans);
     }
 }

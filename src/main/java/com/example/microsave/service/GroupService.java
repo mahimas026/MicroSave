@@ -24,15 +24,22 @@ public class GroupService {
     }
 
     public Group getGroupById(Long id) {
+
         return groupRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Group not found"));
+                .orElseThrow(() ->
+                        new RuntimeException("Group not found")
+                );
     }
 
-    public Group updateGroup(Long id, Group group) {
+    public Group updateGroup(
+            Long id,
+            Group group) {
 
         Group existingGroup = getGroupById(id);
 
-        existingGroup.setGroupName(group.getGroupName());
+        existingGroup.setGroupName(
+                group.getGroupName()
+        );
 
         return groupRepository.save(existingGroup);
     }

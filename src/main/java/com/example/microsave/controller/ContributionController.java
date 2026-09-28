@@ -2,9 +2,6 @@ package com.example.microsave.controller;
 
 import com.example.microsave.entity.Contribution;
 import com.example.microsave.service.ContributionService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,53 +19,44 @@ public class ContributionController {
     }
 
     @PostMapping
-    public ResponseEntity<Contribution> createContribution(
-            @Valid @RequestBody Contribution contribution) {
+    public Contribution createContribution(
+            @RequestBody Contribution contribution) {
 
-        return new ResponseEntity<>(
-                contributionService.createContribution(contribution),
-                HttpStatus.CREATED
-        );
+        return contributionService
+                .createContribution(contribution);
     }
 
     @GetMapping
-    public ResponseEntity<List<Contribution>> getAllContributions() {
+    public List<Contribution> getAllContributions() {
 
-        return ResponseEntity.ok(
-                contributionService.getAllContributions()
-        );
+        return contributionService
+                .getAllContributions();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Contribution> getContributionById(
+    public Contribution getContributionById(
             @PathVariable Long id) {
 
-        return ResponseEntity.ok(
-                contributionService.getContributionById(id)
-        );
+        return contributionService
+                .getContributionById(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Contribution> updateContribution(
+    public Contribution updateContribution(
             @PathVariable Long id,
-            @Valid @RequestBody Contribution contribution) {
+            @RequestBody Contribution contribution) {
 
-        return ResponseEntity.ok(
-                contributionService.updateContribution(
-                        id,
-                        contribution
-                )
-        );
+        return contributionService
+                .updateContribution(id, contribution);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteContribution(
+    public String deleteContribution(
             @PathVariable Long id) {
 
-        contributionService.deleteContribution(id);
+        contributionService
+                .deleteContribution(id);
 
-        return ResponseEntity.ok(
-                "Contribution deleted successfully"
-        );
+        return "Contribution deleted successfully";
     }
 }

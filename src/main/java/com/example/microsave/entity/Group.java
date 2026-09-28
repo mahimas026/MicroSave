@@ -1,25 +1,19 @@
 package com.example.microsave.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "groups")
+@Table(name = "micro_groups")
 public class Group {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long groupId;
 
-    @NotBlank(message = "Group name is required")
+    @Column(nullable = false)
     private String groupName;
 
     public Group() {
-    }
-
-    public Group(Long groupId, String groupName) {
-        this.groupId = groupId;
-        this.groupName = groupName;
     }
 
     public Long getGroupId() {

@@ -5,7 +5,6 @@ import com.example.microsave.entity.Repayment;
 import com.example.microsave.repository.LoanRepository;
 import com.example.microsave.repository.RepaymentRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -24,8 +23,8 @@ public class RepaymentService {
         this.loanRepository = loanRepository;
     }
 
-    @Transactional
-    public Repayment createRepayment(Repayment repayment) {
+    public Repayment createRepayment(
+            Repayment repayment) {
 
         if (repayment.getLoan() == null ||
                 repayment.getLoan().getLoanId() == null) {
@@ -35,29 +34,39 @@ public class RepaymentService {
 
         Loan loan = loanRepository.findById(
                 repayment.getLoan().getLoanId()
-        ).orElseThrow(
-                () -> new RuntimeException("Loan not found")
-        );
+        ).orElseThrow(() ->
+                new RuntimeException("Loan not found"));
 
         if (loan.getStatus() != Loan.Status.ACTIVE) {
 
             throw new RuntimeException(
-                    "Repayment can only be made against an active loan"
+                    "Loan is not active"
             );
         }
 
-        BigDecimal previousRepayments =
-                repaymentRepository.getTotalRepaymentByLoanId(
-                        loan.getLoanId()
-                );
-
-        BigDecimal remainingAmount =
-                loan.getAmount().subtract(previousRepayments);
-
-        if (repayment.getAmount().compareTo(remainingAmount) > 0) {
+        if (repayment.getAmount() == null ||
+                repayment.getAmount()
+                        .compareTo(BigDecimal.ZERO) <= 0) {
 
             throw new RuntimeException(
-                    "Repayment amount cannot exceed outstanding loan"
+                    "Repayment amount must be greater than zero"
+            );
+        }
+
+        BigDecimal alreadyPaid =
+                repaymentRepository
+                        .getTotalRepaymentByLoanId(
+                                loan.getLoanId()
+                        );
+
+        BigDecimal remaining =
+                loan.getAmount().subtract(alreadyPaid);
+
+        if (repayment.getAmount()
+                .compareTo(remaining) > 0) {
+
+            throw new RuntimeException(
+                    "Repayment cannot be greater than outstanding loan"
             );
         }
 
@@ -66,10 +75,10 @@ public class RepaymentService {
         Repayment saved =
                 repaymentRepository.save(repayment);
 
-        BigDecimal totalRepayments =
-                previousRepayments.add(repayment.getAmount());
+        BigDecimal newTotal =
+                alreadyPaid.add(repayment.getAmount());
 
-        if (totalRepayments.compareTo(loan.getAmount()) == 0) {
+        if (newTotal.compareTo(loan.getAmount()) == 0) {
 
             loan.setStatus(Loan.Status.COMPLETED);
 
@@ -86,11 +95,9 @@ public class RepaymentService {
     public Repayment getRepaymentById(Long id) {
 
         return repaymentRepository.findById(id)
-                .orElseThrow(
-                        () -> new RuntimeException(
-                                "Repayment not found"
-                        )
-                );
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Repayment not found"));
     }
 
     public Repayment updateRepayment(
@@ -100,10 +107,24 @@ public class RepaymentService {
         Repayment existing =
                 getRepaymentById(id);
 
-        existing.setAmount(repayment.getAmount());
+        existing.setAmount(
+                repayment.getAmount()
+        );
+
         existing.setRepaymentDate(
                 repayment.getRepaymentDate()
         );
+
+        if (repayment.getLoan() != null &&
+                repayment.getLoan().getLoanId() != null) {
+
+            Loan loan = loanRepository.findById(
+                    repayment.getLoan().getLoanId()
+            ).orElseThrow(() ->
+                    new RuntimeException("Loan not found"));
+
+            existing.setLoan(loan);
+        }
 
         return repaymentRepository.save(existing);
     }

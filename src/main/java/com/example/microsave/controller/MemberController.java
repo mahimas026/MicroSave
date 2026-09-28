@@ -2,13 +2,9 @@ package com.example.microsave.controller;
 
 import com.example.microsave.entity.Member;
 import com.example.microsave.service.MemberService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/members")
@@ -21,59 +17,38 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Member> createMember(
-            @Valid @RequestBody Member member) {
+    public Member createMember(
+            @RequestBody Member member) {
 
-        return new ResponseEntity<>(
-                memberService.createMember(member),
-                HttpStatus.CREATED
-        );
+        return memberService.createMember(member);
     }
 
     @GetMapping
-    public ResponseEntity<List<Member>> getAllMembers() {
-
-        return ResponseEntity.ok(
-                memberService.getAllMembers()
-        );
+    public List<Member> getAllMembers() {
+        return memberService.getAllMembers();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Member> getMemberById(
+    public Member getMemberById(
             @PathVariable Long id) {
 
-        return ResponseEntity.ok(
-                memberService.getMemberById(id)
-        );
-    }
-
-    @GetMapping("/{id}/balance")
-    public ResponseEntity<Map<String, Object>> getMemberBalance(
-            @PathVariable Long id) {
-
-        return ResponseEntity.ok(
-                memberService.getMemberBalance(id)
-        );
+        return memberService.getMemberById(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Member> updateMember(
+    public Member updateMember(
             @PathVariable Long id,
-            @Valid @RequestBody Member member) {
+            @RequestBody Member member) {
 
-        return ResponseEntity.ok(
-                memberService.updateMember(id, member)
-        );
+        return memberService.updateMember(id, member);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteMember(
+    public String deleteMember(
             @PathVariable Long id) {
 
         memberService.deleteMember(id);
 
-        return ResponseEntity.ok(
-                "Member deleted successfully"
-        );
+        return "Member deleted successfully";
     }
 }
