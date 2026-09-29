@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="icon" type="image/svg+xml" href="/vite.svg">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>MicroSave — Member Registration</title>
+
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+  <div class="login-page">
+
+    <!-- LEFT SIDE -->
+    <div class="login-left">
+
+      <div class="login-brand">
+
+        <div class="logo-icon">
+          <svg
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+            />
+          </svg>
+        </div>
+
+        <span class="brand-name">
+          MicroSave
+        </span>
+
+      </div>
+
+
+      <h1>
+        Join Your Group.<br>
+        Save Together.
+      </h1>
+
+
+      <p class="tagline">
+        Self Help Group Savings &amp; Loan Management
+      </p>
+
+
+      <p class="description">
+        MicroSave helps your community manage group savings,
+        member contributions, loans and repayments — all in one
+        simple, secure dashboard built for self help groups.
+      </p>
+
+
+      <div class="login-illustration">
+
+        <div class="illust-card">
+          <div class="num">₹1.2L+</div>
+          <div class="lbl">Total Savings</div>
+        </div>
+
+        <div class="illust-card">
+          <div class="num">48</div>
+          <div class="lbl">Active Members</div>
+        </div>
+
+        <div class="illust-card">
+          <div class="num">12</div>
+          <div class="lbl">Active Loans</div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- RIGHT SIDE -->
+    <div class="login-right">
+
+      <div class="login-card">
+
+        <h2>
+          Create account
+        </h2>
+
+        <p class="subtitle">
+          Register using your existing member details
+        </p>
+
+
+        <!-- MESSAGE -->
+        <div
+          class="login-error"
+          id="register-message"
+        >
+          <span id="register-message-text"></span>
+        </div>
+
+
+        <!-- REGISTER FORM -->
+        <form
+          id="register-form"
+          autocomplete="off"
+        >
+
+          <!-- MEMBER ID -->
+          <div class="form-group">
+
+            <label for="memberId">
+              Member ID
+            </label>
+
+            <div class="input-wrapper">
+
+              <input
+                type="number"
+                id="memberId"
+                class="form-input"
+                placeholder="Enter your Member ID"
+                required
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- MEMBER NAME -->
+          <div class="form-group">
+
+            <label for="memberName">
+              Member Name
+            </label>
+
+            <div class="input-wrapper">
+
+              <input
+                type="text"
+                id="memberName"
+                class="form-input"
+                placeholder="Enter your name"
+                required
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- PHONE -->
+          <div class="form-group">
+
+            <label for="phone">
+              Phone Number
+            </label>
+
+            <div class="input-wrapper">
+
+              <input
+                type="text"
+                id="phone"
+                class="form-input"
+                placeholder="Enter phone number"
+                required
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- USERNAME -->
+          <div class="form-group">
+
+            <label for="username">
+              Username
+            </label>
+
+            <div class="input-wrapper">
+
+              <input
+                type="text"
+                id="username"
+                class="form-input"
+                placeholder="Create username"
+                required
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- PASSWORD -->
+          <div class="form-group">
+
+            <label for="password">
+              Password
+            </label>
+
+            <div class="input-wrapper">
+
+              <input
+                type="password"
+                id="password"
+                class="form-input"
+                placeholder="Create password"
+                required
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- CONFIRM PASSWORD -->
+          <div class="form-group">
+
+            <label for="confirmPassword">
+              Confirm Password
+            </label>
+
+            <div class="input-wrapper">
+
+              <input
+                type="password"
+                id="confirmPassword"
+                class="form-input"
+                placeholder="Confirm password"
+                required
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- REGISTER BUTTON -->
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg btn-block"
+            id="register-btn"
+          >
+            Create Account
+          </button>
+
+
+          <!-- LOGIN LINK -->
+          <p
+            style="
+              text-align: center;
+              margin-top: 18px;
+            "
+          >
+            Already have an account?
+
+            <a href="login.html">
+              Sign in
+            </a>
+
+          </p>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script
+    type="module"
+    src="/register.js"
+  ></script>
+
+</body>
+
+</html>
